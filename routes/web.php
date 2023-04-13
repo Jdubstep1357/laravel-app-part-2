@@ -18,11 +18,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    // all included in laravel:breeze
-    return view('dashboard');
-    // middleware allows authentication
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Creating route only for logged in users
+Route::group(['middleware' => ['auth']], function() {
+    
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+Route::group(['middleware' => ['is_admin']], function() {
+    Route::resource(name: 'categories', controller: \App\Http\Controllers\CategoryController::class);
+    // References newly created PostsController
+    Route::resource(name: 'posts', controller: \App\Http\Controllers\PostController::class);
+});
+
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -33,5 +42,4 @@ Route::middleware('auth')->group(function () {
 // auth file allows registration/verification
 require __DIR__.'/auth.php';
 
-// Route to Controller which is important for other part
-Route::resource(name: 'categories', controller:\App\Http\Controllers\CategoryController::class);
+

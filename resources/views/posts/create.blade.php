@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('New Category') }}
+            {{ __('Create Posts') }}
         </h2>
     </x-slot>
 
@@ -24,14 +24,26 @@
 
                     <!-- route is example of resource controller -->
                     <!-- $category example of route model binding -->
-                   <form method="post" action={{ route('categories.store') }}>
+                   <form method="post" action={{ route('posts.store') }}>
 
                     <!-- csrf helps not allowing multiple submission of forms elsewhere
                     by generating unique key -->
                     @csrf
-                    Name:
+                    Title:
                     <br />
-                    <input name="name" />
+                    <input type="text" name="title" />
+                    <br><br />
+                    Post text:
+                    <br />
+                    <textarea name="post_text"></textarea/>
+                    <br /><br />
+                    Category:
+                    <br />
+                    <select name="category_id">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
                     <br>
                     <button type="submit">Save</button>
                    </form>
